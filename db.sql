@@ -38,7 +38,7 @@ CREATE TABLE `order` (
   state ENUM('treatment','sent','delivered') NOT NULL,
   PRIMARY KEY (id_order),
   INDEX (user_id),
-  FOREIGN KEY(user_id)
+  FOREIGN KEY (user_id) REFERENCES user(id_user)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `order` ADD CONSTRAINT FK_UserOrder FOREIGN KEY (user_id) REFERENCES user(id_user) ON UPDATE RESTRICT ON DELETE RESTRICT;
