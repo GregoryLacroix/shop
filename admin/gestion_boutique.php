@@ -1,119 +1,17 @@
-<!DOCTYPE html>
-<html
-  lang="en"
-  class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
+<?php 
+require_once('../include/init.php');
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boutique Admin Dashboard</title>
+// Si l'utilisateur n'est pas connecté ou est connecté mais non admin, on le redirige vers la page index.php
 
-  <!-- Bulma is included -->
-  <link rel="stylesheet" href="../assets/css/main.min.css" />
+if(!adminConnected()){
+  // header('location: ' . URL . ' index.php');
+  //                  http://localhost/PHP/shop/index.php
+  header('location: ' . URL . 'index.php');
+}
 
-  <!-- Fonts -->
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-  <link
-    href="https://fonts.googleapis.com/css?family=Nunito"
-    rel="stylesheet"
-    type="text/css" />
-</head>
+require_once('include/header.php');
+?>
 
-<body>
-  <div id="app">
-    <nav id="navbar-main" class="navbar is-fixed-top">
-      <div class="navbar-brand">
-        <a class="navbar-item is-hidden-desktop jb-aside-mobile-toggle">
-          <span class="icon"><i class="mdi mdi-forwardburger mdi-24px"></i></span>
-        </a>
-      </div>
-      <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
-        <div class="navbar-end">
-          <div
-            class="navbar-item has-dropdown has-dropdown-with-icons has-divider has-user-avatar is-hoverable">
-            <a class="navbar-link is-arrowless">
-              <div class="is-user-avatar">
-                <img
-                  src="https://avatars.dicebear.com/v2/initials/john-doe.svg"
-                  alt="John Doe" />
-              </div>
-              <div class="is-user-name"><span>John Doe</span></div>
-              <!-- <span class="icon"><i class="mdi mdi-chevron-down"></i></span> -->
-            </a>
-            <!-- <div class="navbar-dropdown">
-                <a href="profile.php" class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-account"></i></span>
-                  <span>My Profile</span>
-                </a>
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-settings"></i></span>
-                  <span>Settings</span>
-                </a>
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-email"></i></span>
-                  <span>Messages</span>
-                </a>
-                <hr class="navbar-divider" />
-                <a class="navbar-item">
-                  <span class="icon"><i class="mdi mdi-logout"></i></span>
-                  <span>Log Out</span>
-                </a>
-              </div> -->
-          </div>
-          <a title="Log out" class="navbar-item is-desktop-icon-only">
-            <span class="icon"><i class="mdi mdi-logout"></i></span>
-            <span>Log out</span>
-          </a>
-        </div>
-      </div>
-    </nav>
-    <aside class="aside is-placed-left is-expanded">
-      <div class="aside-tools">
-        <div class="aside-tools-label">
-          <span><b>Boutique</b> Admin</span>
-        </div>
-      </div>
-      <div class="menu is-menu-main">
-        <p class="menu-label">General</p>
-        <ul class="menu-list">
-          <li>
-            <a href="index.php" class="has-icon">
-              <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-              <span class="menu-item-label">Dashboard</span>
-            </a>
-          </li>
-        </ul>
-        <p class="menu-label">MENU</p>
-        <ul class="menu-list">
-          <li>
-            <a href="gestion_boutique.php" class="is-active has-icon">
-              <span class="icon has-update-mark"><span class="mdi mdi-store"></span>
-              </span>
-              <span class="menu-item-label">Boutique</span>
-            </a>
-          </li>
-          <li>
-            <a href="gestion_commande.php" class="has-icon">
-              <span class="icon"><span class="mdi mdi-sheep"></span> </span>
-              <span class="menu-item-label">Commandes</span>
-            </a>
-          </li>
-          <li>
-            <a href="gestion_user.php" class="has-icon">
-              <span class="icon"><i class="mdi mdi-account-circle"></i></span>
-              <span class="menu-item-label">Utilisateurs</span>
-            </a>
-          </li>
-          <li>
-            <a href="../index.php" title="Log out" class="has-icon">
-              <span class="icon"><i class="mdi mdi-logout"></i></span>
-              <span>Quitter</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </aside>
     <section class="section is-title-bar">
       <div class="level">
         <div class="level-left">
@@ -260,36 +158,109 @@
         <header class="card-header">
           <p class="card-header-title">
             <span class="icon"><span class="mdi mdi-shopping-outline"></span></span>
-            Modification Produit
+            Ajout Produit
           </p>
         </header>
         <div class="card-content">
-          <form method="get">
+          <form method="post">
             <div class="field is-horizontal">
               <div class="field-label is-normal">
-                <label class="label">From</label>
+                <label class="label">Réference / Catégorie</label>
               </div>
               <div class="field-body">
                 <div class="field">
-                  <p class="control is-expanded has-icons-left">
-                    <input class="input" type="text" placeholder="Name" />
-                    <span class="icon is-small is-left"><i class="mdi mdi-account"></i></span>
-                  </p>
+                  <input class="input" type="text" name="reference" placeholder="Entrer une référence produit" />
                 </div>
                 <div class="field">
-                  <p
-                    class="control is-expanded has-icons-left has-icons-right">
-                    <input
-                      class="input is-success"
-                      type="email"
-                      placeholder="Email"
-                      value="alex@smith.com" />
-                    <span class="icon is-small is-left"><i class="mdi mdi-mail"></i></span>
-                    <span class="icon is-small is-right"><i class="mdi mdi-check"></i></span>
-                  </p>
+                  <input class="input" type="text" name="category" placeholder="Entrer une catégorie produit" />
                 </div>
               </div>
             </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Titre / Couleur</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <input class="input" type="text" name="title" placeholder="Entrer un titre produit" />
+                </div>
+                <div class="field">
+                  <input class="input" type="text" name="color" placeholder="Entrer une couleur produit" />
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Taille / Genre</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-narrow">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select name="size">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-narrow">
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select name="public">
+                        <option value="homme">Homme</option>
+                        <option value="femme">Femme</option>
+                        <option value="mixte">Mixte</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Photo produit</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="file has-name">
+                    <label class="file-label">
+                      <input class="file-input" type="file" name="resume" />
+                      <span class="file-cta">
+                        <!-- <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span> -->
+                        <span class="file-label">Choisir un fichier</span>
+                      </span>
+                      <span class="file-name">Parcourir</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <div class="field is-horizontal">
               <div class="field-label"></div>
               <div class="field-body">
@@ -400,45 +371,6 @@
       </div>
     </section>
 
-    <footer class="footer">
-      <div class="container-fluid">
-        <div class="level">
-          <div class="level-left">
-            <div class="level-item">© 2025, Grégory LACROIX</div>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <div id="sample-modal" class="modal">
-      <div class="modal-background jb-modal-close"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Confirm action</p>
-          <button class="delete jb-modal-close" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-          <p>This will permanently delete <b>Some Object</b></p>
-          <p>This is sample modal</p>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button jb-modal-close">Cancel</button>
-          <button class="button is-danger jb-modal-close">Delete</button>
-        </footer>
-      </div>
-      <button
-        class="modal-close is-large jb-modal-close"
-        aria-label="close"></button>
-    </div>
-  </div>
-
-  <!-- Scripts below are for demo only -->
-  <script type="text/javascript" src="../assets/js/main.min.js"></script>
-
-  <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css" />
-</body>
-
-</html>
+<?php 
+require_once('include/footer.php');
+?>

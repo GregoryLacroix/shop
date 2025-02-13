@@ -1137,5 +1137,17 @@ form input[type="submit"]:focus {
 }
 
 .background-danger {
-  color: #f7444e;
+  background: #f7444e;
+}
+
+.box-profil {
+  position: relative;
+  margin-top: 25px;
+  padding: 35px 35px;
+  background-color: #f7f8f9;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  overflow: hidden;
+  box-shadow: 5px 5px 5px -5px rgba(0, 0, 0, 0.2);
+  border: solid #fff 10px;
 }
