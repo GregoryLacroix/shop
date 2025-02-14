@@ -1,5 +1,14 @@
 <?php 
 require_once('include/init.php');
+
+/*
+  Exo: Afficher les produits stockés en BDD
+  1. Sélectionner l'ensemble de la table product
+  2. Excécuter une méthode (fecth / fetchAll) pour rendre le résultat exploitable sous forme d'Array
+  3. Traitement pour l'affichage (boucle)
+  4. Prévoir un lien qui redirige vers la page fiche_produit.php pour chaque produit, avec envoi de l'id_product dans l'URL   
+*/
+
 require_once('include/header.php');
 ?>
 
@@ -23,6 +32,8 @@ require_once('include/header.php');
         <h2>Nos <span>produits</span></h2>
       </div>
       <div class="row">
+
+      
         <div class="col-sm-6 col-md-4 col-lg-3">
           <div class="box">
             <div class="option_container">
