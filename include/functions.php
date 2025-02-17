@@ -52,12 +52,31 @@ function createCart(){
 // ------- FONCTION AJOUTER PRODUIT DANS PANIER SESSION
 function addProductToCart($id_product, $title, $picture, $reference, $quantity, $price){
     createCart(); // On contrôle si le panier existe ou non dans la session
-    
-    // les [] vide permettent de créer des indices numérique dans les tableaux Array
-    $_SESSION['cart']['id_product'][] = $id_product;
-    $_SESSION['cart']['title'][] = $title;
-    $_SESSION['cart']['picture'][] = $picture;
-    $_SESSION['cart']['reference'][] = $reference;
-    $_SESSION['cart']['quantity'][] = $quantity;
-    $_SESSION['cart']['price'][] = $price;
+
+    // On contrôle si l'id du produit que l'on tente d'ajouter dans le session panier existe déjà
+    $positionProduct = array_search($id_product, $_SESSION['cart']['id_product']);
+    // var_dump($positionProduct);
+
+    // Si la valeur de $positionProduct est différente de false, cela veut dire que l'id_product existe dans le panier, on modifie seulement la quantité du produit
+    if($positionProduct !== false){
+        $_SESSION['cart']['quantity'][$positionProduct] += $quantity;
+    }else{
+        // Sinon l'id n'est pas dans le session, on crée une nouvelle ligne dans le panier
+        // les [] vide permettent de créer des indices numérique dans les tableaux Array
+        $_SESSION['cart']['id_product'][] = $id_product;
+        $_SESSION['cart']['title'][] = $title;
+        $_SESSION['cart']['picture'][] = $picture;
+        $_SESSION['cart']['reference'][] = $reference;
+        $_SESSION['cart']['quantity'][] = $quantity;
+        $_SESSION['cart']['price'][] = $price;
+    }
+}
+
+// ------- FONCTION CALCUL MONTANT TOTAL DU PANIER
+function totalAmount(){
+    $total = 0;
+    for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++){ 
+        $total += $_SESSION['cart']['quantity'][$i] * $_SESSION['cart']['price'][$i];
+    }
+    return round($total, 2);
 }

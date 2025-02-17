@@ -1155,3 +1155,7 @@ form input[type="submit"]:focus {
   box-shadow: 5px 5px 5px -5px rgba(0, 0, 0, 0.2);
   border: solid #fff 10px;
 }
+
+.picture__product {
+  width: 75px;
+}

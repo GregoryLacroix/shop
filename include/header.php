@@ -26,6 +26,8 @@
   <link href="assets/css-famma/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="assets/css-famma/responsive.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -100,7 +102,7 @@
               
 
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="panier.php">
                   <svg
                     version="1.1"
                     id="Capa_1"
@@ -151,12 +153,15 @@
                     <g></g>
                   </svg>
                 </a>
+
+                <!-- Exo : afficher le nombre de produit dans le panier de la session -->
+
               </li>
-              <form class="form-inline">
+              <!-- <form class="form-inline">
                 <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
                   <i class="fa fa-search" aria-hidden="true"></i>
                 </button>
-              </form>
+              </form> -->
             </ul>
           </div>
         </nav>
