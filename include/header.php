@@ -29,6 +29,10 @@
 </head>
 
 <body>
+  <?php 
+  // echo '<pre>'; print_r($_SERVER); echo '</pre>';
+  ?>
+
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">

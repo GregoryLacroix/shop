@@ -1136,6 +1136,10 @@ form input[type="submit"]:focus {
   font-size: 0.7rem;
 }
 
+.error-text-color {
+  color: #f7444e;
+}
+
 .background-danger {
   background: #f7444e;
 }
