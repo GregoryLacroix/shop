@@ -80,3 +80,10 @@ function totalAmount(){
     }
     return round($total, 2);
 }
+
+// ------- FONCTION LIENS ACTIFS NAV
+//                /PHP/shop/product.php
+function activeLink($url){
+    if($_SERVER['PHP_SELF'] == $url)
+        echo ' active';
+}

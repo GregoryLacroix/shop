@@ -15,6 +15,17 @@ if(isset($_POST['add_cart'])){
   
   header('location: panier.php');
 }
+
+if(isset($_POST['payForCart'])){
+  // echo "Panier validé";
+
+  for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++){
+    $data = $connect_db->query("SELECT * FROM product WHERE id_product =" . $_SESSION['cart']['id_product'][$i]);
+    $product = $data->fetch(PDO::FETCH_ASSOC);
+    echo '<pre>'; print_r($product); echo '</pre>';
+  }
+}
+
 echo '<pre>'; print_r($_SESSION); echo '</pre>';
 
 require_once('include/header.php');
@@ -52,8 +63,15 @@ require_once('include/header.php');
             </tr>
           </thead>
           <tbody>
-            <?php 
-            //            4     4
+            <?php if(empty($_SESSION['cart']['id_product'])): ?>
+
+              <tr>
+                <td colspan="6" class="text-center">Aucun article dans le panier</td>
+              </tr>
+
+            <?php else:
+            
+              //            4     4
               for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++): 
             ?>
                 <tr>
@@ -80,23 +98,28 @@ require_once('include/header.php');
               <th></th>
               <th><?= totalAmount(); ?>€</th>
             </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
+            
+      <?php if(!empty($_SESSION['cart']['id_product'])): ?>
 
-      <div class="btn-box">
-        <?php if(userConnected()): ?>
+        <div class="btn-box">
+          <?php if(userConnected()): ?>
 
-          <form action="" method="post">
-            <input type="submit" name="payForCart" value="Procéder au paiement">
-          </form>
+            <form action="" method="post">
+              <input type="submit" name="payForCart" value="Procéder au paiement">
+            </form>
 
-        <?php else: ?>
+          <?php else: ?>
 
-          <p>Veuillez vous <a href="inscription.php">inscrire</a> ou vous <a href="connexion.php">identifier</a> pour valider le paiement</p>
-          
-        <?php endif; ?>
-      </div>
+            <p>Veuillez vous <a href="inscription.php">inscrire</a> ou vous <a href="connexion.php">identifier</a> pour valider le paiement</p>
+
+          <?php endif; ?>
+        </div>
+      
+      <?php endif; ?>
 
       <div class="btn-box">
         <a href="product.php"> Continuer vos achats </a>
