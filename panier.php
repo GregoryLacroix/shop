@@ -18,11 +18,21 @@ if(isset($_POST['add_cart'])){
 
 if(isset($_POST['payForCart'])){
   // echo "Panier validé";
-
+  //                  4
   for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++){
+    //                                                                          10
     $data = $connect_db->query("SELECT * FROM product WHERE id_product =" . $_SESSION['cart']['id_product'][$i]);
     $product = $data->fetch(PDO::FETCH_ASSOC);
     echo '<pre>'; print_r($product); echo '</pre>';
+    
+    // Si la quantité en stock en BDD est inférieur à la quantité commandée
+    if($product['stock'] < $_SESSION['cart']['quantity'][$i]){
+      $error = '';
+
+      $error .= '<div class="alert alert-danger text-center">Stock restant du produit ' . $_SESSION['cart']['title'][$i] . ' : <strong>' . $product['stock'] . '</strong></div>';
+
+      $error .= '<div class="alert alert-warning text-center mt-2">Quantité commandée du produit ' . $_SESSION['cart']['title'][$i] . ' : <strong>' . $_SESSION['cart']['quantity'][$i] . '</strong></div>';
+    }
   }
 }
 
@@ -49,6 +59,9 @@ require_once('include/header.php');
       <div class="heading_container heading_center">
         <h2>Valider vos <span>achats !</span></h2>
       </div>
+        
+      <?php if(isset($error)) echo $error; ?>
+
       <div class="row">
         <table class="table table-borderless">
           <thead>
@@ -71,7 +84,7 @@ require_once('include/header.php');
 
             <?php else:
             
-              //            4     4
+              //       3      4     4
               for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++): 
             ?>
                 <tr>
