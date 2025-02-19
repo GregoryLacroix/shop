@@ -13,14 +13,14 @@ if(isset($_GET['action']) && $_GET['action'] == 'addCart'){
   $quantity = 1;
   addProductToCart($product['id_product'], $product['title'], $product['picture'], $product['reference'], $quantity, $product['price']);
 
-  $_SESSION['msgAddProductCart'] = '<div class="bg-success p-3 text-white text-center">L\'article a été ajouté au panier.</div>';
+  $_SESSION['msgAddProductCartHome'] = '<div class="bg-success p-3 text-white text-center">L\'article a été ajouté au panier.</div>';
   $_SESSION['msg'] = true;
 
   header('location: index.php');
 }
 
 require_once('include/header.php');
-if(isset($_SESSION['msgAddProductCart'])) echo $_SESSION['msgAddProductCart'];
+if(isset($_SESSION['msgAddProductCartHome'])) echo $_SESSION['msgAddProductCartHome'];
 
 ?>
     <!-- slider section -->
@@ -564,6 +564,6 @@ if(isset($_SESSION['msgAddProductCart'])) echo $_SESSION['msgAddProductCart'];
 <?php 
 require_once('include/footer.php');
 if($_SESSION['msg'] == false){
-  unset($_SESSION['msgAddProductCart']);
+  unset($_SESSION['msgAddProductCartHome']);
 }
 ?>

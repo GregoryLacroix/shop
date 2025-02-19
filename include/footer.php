@@ -30,19 +30,20 @@
             </p>
             <div class="footer_social">
               <a href="">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
+                <!-- <i class="fa fa-facebook" aria-hidden="true"></i> -->
+                <i class="fa-brands fa-facebook" aria-hidden="true"></i>
               </a>
               <a href="">
-                <i class="fa fa-twitter" aria-hidden="true"></i>
+                <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
               </a>
               <a href="">
-                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
               </a>
               <a href="">
-                <i class="fa fa-instagram" aria-hidden="true"></i>
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
               </a>
               <a href="">
-                <i class="fa fa-pinterest" aria-hidden="true"></i>
+                <i class="fa-brands fa-pinterest" aria-hidden="true"></i>
               </a>
             </div>
           </div>
@@ -60,7 +61,7 @@
   <!-- footer end -->
   <div class="cpy_">
     <p>
-      © 2025 Tous droits réservés par Grégory LACROIX
+      © <?= date('Y') ?> Tous droits réservés par Grégory LACROIX
     </p>
   </div>
   <!-- jQery -->
