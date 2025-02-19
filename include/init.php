@@ -9,13 +9,13 @@ $connect_db = new PDO('mysql:host=localhost;dbname=shop', 'root', '', [
 session_start();
 
 // ------- CHEMIN
-define('RACINE_SITE', $_SERVER['DOCUMENT_ROOT'] . '/PHP/shop/');
+define('RACINE_SITE', $_SERVER['DOCUMENT_ROOT'] . '/PHP/shop-correction/');
 // echo '<pre>'; print_r(RACINE_SITE); echo '</pre>';
 // Cette constante retourne le chemin physique du dossier htdocs sur le serveur, de notre dossier 'shop' sur le serveur
 // Lors de l'enregistrement d'image/photos, nous aurons besoin du chemin complet dossier images pour enregistrer la photo
 // /opt/lampp/htdocs/shop/assets/images/product.jpg;
 
-define("URL", "http://localhost/PHP/shop/");
+define("URL", "http://localhost/PHP/shop-correction/");
 // define("URL", "https://www.famms.fr/");
 // <img src="http://localhost/PHP/shop/assets/images/product.jpg">
 // <img src="https://www.famms.fr/assets/images/product.jpg">
@@ -27,11 +27,11 @@ $content = '';
 
 // ------------ FAILLES XSS
 foreach($_POST as $key => $value){
-    $_POST[$key] = htmlentities(addslashes(trim($value)));
+    $_POST[$key] = htmlspecialchars(addslashes(trim($value)));
 }
 
 foreach($_GET as $key => $value){
-    $_GET[$key] = htmlentities(addslashes(trim($value)));
+    $_GET[$key] = htmlspecialchars(addslashes(trim($value)));
 }
 // trim() : fonction prédéfinie qui supprime les espaces en début et fin de chaines de caractères
 

@@ -9,6 +9,32 @@ if(!adminConnected()){
   header('location: ' . URL . 'index.php');
 }
 
+$data = $connect_db->query("SELECT COUNT(*) AS nbClient FROM user WHERE roles != 'admin'");
+$nbClient = $data->fetch(PDO::FETCH_ASSOC);
+
+$data = $connect_db->query("SELECT SUM(rising) AS nbSales FROM `order`");
+$nbSales = $data->fetch(PDO::FETCH_ASSOC); 
+
+$data = $connect_db->query("
+  SELECT product.title
+  FROM product INNER JOIN order_details
+  WHERE order_details.product_id = product.id_product
+  GROUP BY order_details.product_id
+  ORDER BY COUNT(order_details.product_id) DESC LIMIT 0,1
+");
+$bestSale = $data->fetch(PDO::FETCH_ASSOC);
+
+$data = $connect_db->query("SELECT id_product, picture, title, stock FROM product WHERE stock <= 20 ORDER BY stock");
+$products = $data->fetchAll(PDO::FETCH_ASSOC); 
+
+$nbProduct = $data->rowCount();
+if($nbProduct <= 1)
+  $txt = "$nbProduct article stock insuffisant";
+else 
+  $txt = "$nbProduct articles stock insuffisant";
+
+// echo '<pre>'; print_r($products); echo '</pre>';
+
 require_once('include/header.php');
 ?>
     <section class="section is-title-bar">
@@ -46,7 +72,7 @@ require_once('include/header.php');
                 <div class="level-item">
                   <div class="is-widget-label">
                     <h3 class="subtitle is-spaced">Clients</h3>
-                    <h1 class="title">512</h1>
+                    <h1 class="title"><?= $nbClient['nbClient'] ?></h1>
                   </div>
                 </div>
                 <div class="level-item has-widget-icon">
@@ -64,8 +90,8 @@ require_once('include/header.php');
               <div class="level is-mobile">
                 <div class="level-item">
                   <div class="is-widget-label">
-                    <h3 class="subtitle is-spaced">Sales</h3>
-                    <h1 class="title">$7,770</h1>
+                    <h3 class="subtitle is-spaced">Ventes</h3>
+                    <h1 class="title"><?= $nbSales['nbSales'] ?>€</h1>
                   </div>
                 </div>
                 <div class="level-item has-widget-icon">
@@ -83,8 +109,8 @@ require_once('include/header.php');
               <div class="level is-mobile">
                 <div class="level-item">
                   <div class="is-widget-label">
-                    <h3 class="subtitle is-spaced">Performance</h3>
-                    <h1 class="title">256%</h1>
+                    <h3 class="subtitle is-spaced">Meilleur vente</h3>
+                    <h1 class="title"><?= ucfirst($bestSale['title']) ?></h1>
                   </div>
                 </div>
                 <div class="level-item has-widget-icon">
@@ -98,11 +124,12 @@ require_once('include/header.php');
         </div>
       </div>
 
-      <div class="card has-table has-mobile-sort-spaced">
+       <div class="card has-table">
         <header class="card-header">
           <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-            Produits stock insuffisant
+            <span class="icon"><span class="mdi mdi-shopping-outline"></span>
+            </span>
+            <?= $txt ?>
           </p>
           <a href="#" class="card-header-icon">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
@@ -112,59 +139,114 @@ require_once('include/header.php');
           <div class="b-table has-pagination">
             <div class="table-wrapper has-mobile-cards">
               <table
-                class="table is-fullwidth is-striped is-hoverable is-sortable is-fullwidth">
+                class="table is-fullwidth is-striped is-hoverable is-fullwidth">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Company</th>
-                    <th>City</th>
-                    <th>Progress</th>
-                    <th>Created</th>
-                    <th></th>
+                    <th class="is-checkbox-cell">
+                      <label class="b-checkbox checkbox">
+                        <input type="checkbox" value="false" />
+                        <span class="check"></span>
+                      </label>
+                    </th>
+                    <?php //              10
+                    for($i = 0; $i < $data->columnCount(); $i++):
+                        $dataColumn = $data->getColumnMeta($i);
+                        // echo '<pre>'; print_r($dataColumn); echo '</pre>';  
+                        if($dataColumn['name'] != 'id_product'):
+                          if($dataColumn['name'] == 'stock'):
+
+                    ?>
+                        <th class="has-text-centered"><?= ucfirst($dataColumn['name']) ?></th>
+                      <?php else: ?>
+                        <th class="has-text-left"><?= ucfirst($dataColumn['name']) ?></th>
+
+                    <?php 
+                          endif;
+                        endif;
+                    endfor; 
+                    ?>
+                    <th class="has-text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
+                  <?php foreach($products as $arrayProduct): ?>
                   <tr>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img
-                          src="https://avatars.dicebear.com/v2/initials/rebecca-bauch.svg"
-                          class="is-rounded" />
-                      </div>
+                    <td class="is-checkbox-cell">
+                      <label class="b-checkbox checkbox">
+                        <input type="checkbox" value="false" />
+                        <span class="check"></span>
+                      </label>
                     </td>
-                    <td data-label="Name">Rebecca Bauch</td>
-                    <td data-label="Company">Daugherty-Daniel</td>
-                    <td data-label="City">South Cory</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress
-                        max="100"
-                        class="progress is-small is-primary"
-                        value="79">
-                        79
-                      </progress>
-                    </td>
-                    <td data-label="Created">
-                      <small
-                        class="has-text-grey is-abbr-like"
-                        title="Oct 25, 2020">Oct 25, 2020</small>
-                    </td>
-                    <td class="is-actions-cell">
+                    
+                    <?php 
+                    foreach($arrayProduct as $key => $value):
+                      if($key != 'id_product'):
+                    ?>
+
+                      <?php if($key == 'picture'): ?>
+                        <td data-label="<?= ucfirst($key) ?>">
+                          <img src="<?= $value ?>" class="picture__product" alt="<?= $arrayProduct['title'] ?>">
+                        </td>
+                      <?php elseif($key == 'stock' && $value <= 10): ?>
+                        <td data-label="<?= ucfirst($key) ?>" class="is-danger has-text-centered is-vcentered">
+                          <?= "<strong class=''>$value</strong>" ?>
+                        </td>
+                      <?php elseif($key == 'stock' && $value <= 20): ?>
+                        <td data-label="<?= ucfirst($key) ?>" class="is-warning has-text-centered is-vcentered">
+                          <?= "<strong class=''>$value</strong>" ?>
+                        </td>
+                      <?php else: ?>
+                        <td data-label="<?= ucfirst($key) ?>" class="has-text-left is-vcentered">
+                          <?= $value ?>
+                        </td>
+                      <?php endif; ?>
+
+                    <?php 
+                      endif;
+                    endforeach; 
+                    ?>
+                   
+                    <td class="is-actions-cell is-vcentered">
                       <div class="buttons is-right">
-                        <button
+                        <a
+                          href="gestion_boutique.php?action=update&id=<?= $arrayProduct['id_product'] ?>"
                           class="button is-small is-primary"
-                          type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button
+                        >
+                          <!-- <span class="icon"><i class="mdi mdi-eye"></i></span> -->
+                          <span class="icon"><span class="mdi mdi-pencil"></span></span>
+                        </a>
+                        <!-- <button
                           class="button is-small is-danger jb-modal"
-                          data-target="sample-modal"
+                          data-target="sample-modal-<?= $arrayProduct['id_product'] ?>"
                           type="button">
                           <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
+                        </button> -->
                       </div>
                     </td>
                   </tr>
+
+                    <div id="sample-modal-<?= $arrayProduct['id_product'] ?>" class="modal">
+                      <div class="modal-background jb-modal-close"></div>
+                      <div class="modal-card">
+                        <header class="modal-card-head">
+                          <p class="modal-card-title">Confirmez la supression</p>
+                          <button class="delete jb-modal-close" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                          <p>Voulez-vous réellement supprimer ce produit ?</p>
+                        </section>
+                        <footer class="modal-card-foot">
+                          <button class="button jb-modal-close">Annuler</button>
+                          <a href="?action=delete&id=<?= $arrayProduct['id_product'] ?>" class="button is-danger jb-modal-close">Supprimer</a>
+                        </footer>
+                      </div>
+                      <button
+                        class="modal-close is-large jb-modal-close"
+                        aria-label="close"></button>
+                    </div>
+                  </div>
+
+                  <?php endforeach; ?>
                 </tbody>
               </table>
             </div>

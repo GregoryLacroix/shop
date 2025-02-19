@@ -72,6 +72,28 @@ function addProductToCart($id_product, $title, $picture, $reference, $quantity, 
     }
 }
 
+// ------- FONCTION SUPPRESSION ARTICLE PANIER
+//                              7
+function removeProductToCart($id_product){
+
+    // On cherche à quel indice se trouve l'id du produit a supprimé dans la session en passant par le tableau Array $_SESSION['cart']['id_product']
+    //                                  7
+    $positionProduct = array_search($id_product, $_SESSION['cart']['id_product']);
+    // var_dump($positionProduct);
+
+    // Si $positionProduct est différent de false, cela veut dire que array_search a retourné l'indice du produit
+    if($positionProduct !== false){
+        // La fonction prédéfinie array_splice permet de supprimer un élément dans un array à un indice correspondant et elle remonte les indices inférieur vers les indices supérieurs, si je supprime le produit à l'indice [2] du tableau Array, le produit à l'indice [3] remonte à l'indice [2]
+        //                                                  [1]
+        array_splice($_SESSION['cart']['id_product'], $positionProduct, 1);
+        array_splice($_SESSION['cart']['title'], $positionProduct, 1);
+        array_splice($_SESSION['cart']['picture'], $positionProduct, 1);
+        array_splice($_SESSION['cart']['reference'], $positionProduct, 1);
+        array_splice($_SESSION['cart']['quantity'], $positionProduct, 1);
+        array_splice($_SESSION['cart']['price'], $positionProduct, 1);
+    }
+}
+
 // ------- FONCTION CALCUL MONTANT TOTAL DU PANIER
 function totalAmount(){
     $total = 0;

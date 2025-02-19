@@ -188,7 +188,7 @@ require_once('include/header.php');
           <div class="b-table has-pagination">
             <div class="table-wrapper has-mobile-cards">
               <table
-                class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                class="table is-fullwidth is-striped is-hoverable is-fullwidth" id="table-products">
                 <thead>
                   <tr>
                     <th class="is-checkbox-cell">
@@ -264,22 +264,22 @@ require_once('include/header.php');
 
                     <div id="sample-modal-<?= $arrayProduct['id_product'] ?>" class="modal">
                       <div class="modal-background jb-modal-close"></div>
-                      <div class="modal-card">
-                        <header class="modal-card-head">
-                          <p class="modal-card-title">Confirmez la supression</p>
-                          <button class="delete jb-modal-close" aria-label="close"></button>
-                        </header>
-                        <section class="modal-card-body">
-                          <p>Voulez-vous réellement supprimer ce produit ?</p>
-                        </section>
-                        <footer class="modal-card-foot">
-                          <button class="button jb-modal-close">Annuler</button>
-                          <a href="?action=delete&id=<?= $arrayProduct['id_product'] ?>" class="button is-danger jb-modal-close">Supprimer</a>
-                        </footer>
-                      </div>
-                      <button
-                        class="modal-close is-large jb-modal-close"
-                        aria-label="close"></button>
+                        <div class="modal-card">
+                          <header class="modal-card-head">
+                            <p class="modal-card-title">Confirmez la supression</p>
+                            <button class="delete jb-modal-close" aria-label="close"></button>
+                          </header>
+                          <section class="modal-card-body">
+                            <p>Voulez-vous réellement supprimer ce produit ?</p>
+                          </section>
+                          <footer class="modal-card-foot">
+                            <button class="button jb-modal-close">Annuler</button>
+                            <a href="?action=delete&id=<?= $arrayProduct['id_product'] ?>" class="button is-danger jb-modal-close">Supprimer</a>
+                          </footer>
+                        </div>
+                        <button
+                          class="modal-close is-large jb-modal-close"
+                          aria-label="close"></button>
                     </div>
                   </div>
 

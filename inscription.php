@@ -57,7 +57,7 @@ if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
     // Le mot de passe n'est jamais conservé en clair dans la base de données
     // password_hash permet de créer une clé de hachage du mot de passe dans la BDD
 
-    $data = $connect_db->prepare("INSERT INTO user (password, firstName, lastName, email, city, zipcode, address) VALUES (:password, :firstName, :lastName, :email, :city, :zipcode, :address)");
+    $data = $connect_db->prepare("INSERT INTO user (password, firstName, lastName, email, city, zipcode, address, createdAt) VALUES (:password, :firstName, :lastName, :email, :city, :zipcode, :address, NOW())");
     $data->bindValue(':password', password_hash($_POST['password'], PASSWORD_DEFAULT), PDO::PARAM_STR);
     $data->bindValue(':firstName', $_POST['firstName'], PDO::PARAM_STR);
     $data->bindValue(':lastName', $_POST['lastName'], PDO::PARAM_STR);

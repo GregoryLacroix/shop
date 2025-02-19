@@ -1,5 +1,6 @@
 <?php 
 require_once('../include/init.php');
+$_SESSION['msg'] = false;
 
 // Si l'utilisateur n'est pas connecté ou est connecté mais non admin, on le redirige vers la page index.php
 
@@ -7,6 +8,46 @@ if(!adminConnected()){
   // header('location: ' . URL . ' index.php');
   //                  http://localhost/PHP/shop/index.php
   header('location: ' . URL . 'index.php');
+}
+
+// ---- USER 
+$data = $connect_db->query("SELECT id_user, firstName, lastName, email, DATE_FORMAT(createdAt, '%d/%m/%Y') AS dateFr, roles FROM user WHERE roles = 'user'");
+$users = $data->fetchAll(PDO::FETCH_ASSOC);
+// echo '<pre>'; print_r($users); echo '</pre>';
+
+$nbUsers = $data->rowCount();
+
+if($nbUsers <= 1)
+  $txtNbUsers = "$nbUsers membre";
+else 
+  $txtNbUsers = "$nbUsers membres";
+
+
+// ---- ADMIN
+$data = $connect_db->query("SELECT id_user, firstName, lastName, email, DATE_FORMAT(createdAt, '%d/%m/%Y') AS dateFr, roles FROM user WHERE roles = 'admin'");
+$admins = $data->fetchAll(PDO::FETCH_ASSOC);
+// echo '<pre>'; print_r($admins); echo '</pre>';
+
+$nbAdmins = $data->rowCount();
+
+if($nbAdmins <= 1)
+  $txtNbAdmins = "$nbAdmins administrateur";
+else 
+  $txtNbAdmins = "$nbAdmins administrateurs";
+
+// UPDATE ROLES
+if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
+  echo '<pre>'; print_r($_POST); echo '</pre>';
+  $data = $connect_db->prepare("UPDATE `user` SET roles = :roles WHERE id_user = :id");
+  $data->bindValue(':roles', $_POST['roles'], PDO::PARAM_STR);
+  $data->bindValue(':id', $_POST['id_user'], PDO::PARAM_STR);
+  $data->execute();
+
+  $_SESSION['msgValidation'] = "Le role utilisateur a été modifié.";
+
+  $_SESSION['msg'] = true;
+
+  header('location: gestion_user.php');
 }
 
 require_once('include/header.php');
@@ -40,15 +81,18 @@ require_once('include/header.php');
       </div>
     </section>
     <section class="section is-main-section">
-      <div class="notification is-primary">
-        <button class="delete"></button>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-      </div>
+      <?php if(isset($_SESSION['msgValidation'])): ?>
+        <div class="notification is-primary">
+          <button class="delete"></button>
+          <?= $_SESSION['msgValidation']; ?>
+        </div>
+      <?php endif; ?>
       <div class="card has-table">
         <header class="card-header">
           <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-            Clients
+            <span class="icon"><span class="mdi mdi-cart-outline"></span>
+            </span>
+            <?= $txtNbUsers ?>
           </p>
           <a href="#" class="card-header-icon">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
@@ -58,7 +102,7 @@ require_once('include/header.php');
           <div class="b-table has-pagination">
             <div class="table-wrapper has-mobile-cards">
               <table
-                class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                class="table is-fullwidth is-striped is-hoverable is-fullwidth"  id="table-users">
                 <thead>
                   <tr>
                     <th class="is-checkbox-cell">
@@ -67,16 +111,16 @@ require_once('include/header.php');
                         <span class="check"></span>
                       </label>
                     </th>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Company</th>
-                    <th>City</th>
-                    <th>Progress</th>
-                    <th>Created</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Date</th>
+                    <th>Role</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
+                  <?php foreach($users as $key => $item): ?>
                   <tr>
                     <td class="is-checkbox-cell">
                       <label class="b-checkbox checkbox">
@@ -84,45 +128,88 @@ require_once('include/header.php');
                         <span class="check"></span>
                       </label>
                     </td>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img
-                          src="https://avatars.dicebear.com/v2/initials/rebecca-bauch.svg"
-                          class="is-rounded" />
-                      </div>
-                    </td>
-                    <td data-label="Name">Rebecca Bauch</td>
-                    <td data-label="Company">Daugherty-Daniel</td>
-                    <td data-label="City">South Cory</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress
-                        max="100"
-                        class="progress is-small is-primary"
-                        value="79">
-                        79
-                      </progress>
-                    </td>
-                    <td data-label="Created">
+                    <td data-label="Prénom"><?= $item['firstName'] ?></td>
+                    <td data-label="Nom"><?= $item['lastName'] ?></td>
+                    <td data-label="Email"><?= $item['email'] ?></td>
+                    <td data-label="Date">
                       <small
                         class="has-text-grey is-abbr-like"
-                        title="Oct 25, 2020">Oct 25, 2020</small>
+                        title="<?= $item['dateFr'] ?>"><?= $item['dateFr'] ?></small>
+                    </td>
+                    <td data-label="Etat">
+                    <?php
+                    // if($item['state'] == 'treatment')
+                    //   echo 'En cours de traitement';
+                    // elseif ($item['state'] == 'sent') 
+                    //   echo 'Envoyée';
+                    // elseif ($item['state'] == 'delivered') 
+                    //   echo 'Livrée';
+                    ?>
+                      <form action="" method="post">
+                        <div class="field-body">
+                          <div class="field is-narrow">
+                            <div class="control">
+                              <div class="select is-fullwidth">
+                                <input type="hidden" name="id_user" value="<?= $item['id_user'] ?>">
+                                <select name="roles" class="formRoles">
+                                  <option value="user" <?php if(isset($item['roles']) && $item['roles'] == "user") echo 'selected'; ?>>ROLE USER</option>
+                                  <option value="admin" <?php if(isset($item['roles']) && $item['roles'] == "admin") echo 'selected'; ?>>ROLE ADMIN</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="buttons is-right">
+                          <button
+                            type="submit"
+                            name="submit"
+                            class="button is-normal is-black"
+                          >
+                            <span class="icon"><span class="mdi mdi-arrow-right-bold"></span></span>
+                          </a>
+                          </div>
+                        </div>
+                      </form>
                     </td>
                     <td class="is-actions-cell">
                       <div class="buttons is-right">
-                        <button
+                        <!-- <a
+                          href="?action=details&id=<?= $item['id_user'] ?>"
                           class="button is-small is-primary"
-                          type="button">
+                        >
                           <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
+                        </a> -->
                         <button
                           class="button is-small is-danger jb-modal"
-                          data-target="sample-modal"
+                          data-target="sample-modal-<?= $item['id_user'] ?>"
                           type="button">
                           <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                         </button>
                       </div>
                     </td>
                   </tr>
+
+                  <div id="sample-modal-<?= $item['id_user'] ?>" class="modal">
+                      <div class="modal-background jb-modal-close"></div>
+                        <div class="modal-card">
+                          <header class="modal-card-head">
+                            <p class="modal-card-title">Confirmez la supression</p>
+                            <button class="delete jb-modal-close" aria-label="close"></button>
+                          </header>
+                          <section class="modal-card-body">
+                            <p>Voulez-vous réellement supprimer cet utilisateur ?</p>
+                          </section>
+                          <footer class="modal-card-foot">
+                            <button class="button jb-modal-close">Annuler</button>
+                            <a href="?action=delete&id=<?= $item['id_user'] ?>" class="button is-danger jb-modal-close">Supprimer</a>
+                          </footer>
+                        </div>
+                        <button
+                          class="modal-close is-large jb-modal-close"
+                          aria-label="close"></button>
+                    </div>
+                  </div>
+
+                  <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
@@ -151,12 +238,13 @@ require_once('include/header.php');
       </div>
     </section>
 
-    <section class="section is-main-section">
+     <section class="section is-main-section">
       <div class="card has-table">
         <header class="card-header">
           <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-            Administrateurs
+            <span class="icon"><span class="mdi mdi-cart-outline"></span>
+            </span>
+            <?= $txtNbAdmins ?>
           </p>
           <a href="#" class="card-header-icon">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
@@ -166,7 +254,7 @@ require_once('include/header.php');
           <div class="b-table has-pagination">
             <div class="table-wrapper has-mobile-cards">
               <table
-                class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                class="table is-fullwidth is-striped is-hoverable is-fullwidth" id="table-admins">
                 <thead>
                   <tr>
                     <th class="is-checkbox-cell">
@@ -175,16 +263,16 @@ require_once('include/header.php');
                         <span class="check"></span>
                       </label>
                     </th>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Company</th>
-                    <th>City</th>
-                    <th>Progress</th>
-                    <th>Created</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Date</th>
+                    <th>Role</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
+                  <?php foreach($admins as $key => $item): ?>
                   <tr>
                     <td class="is-checkbox-cell">
                       <label class="b-checkbox checkbox">
@@ -192,45 +280,80 @@ require_once('include/header.php');
                         <span class="check"></span>
                       </label>
                     </td>
-                    <td class="is-image-cell">
-                      <div class="image">
-                        <img
-                          src="https://avatars.dicebear.com/v2/initials/rebecca-bauch.svg"
-                          class="is-rounded" />
-                      </div>
-                    </td>
-                    <td data-label="Name">Rebecca Bauch</td>
-                    <td data-label="Company">Daugherty-Daniel</td>
-                    <td data-label="City">South Cory</td>
-                    <td data-label="Progress" class="is-progress-cell">
-                      <progress
-                        max="100"
-                        class="progress is-small is-primary"
-                        value="79">
-                        79
-                      </progress>
-                    </td>
-                    <td data-label="Created">
+                    <td data-label="Prénom"><?= $item['firstName'] ?></td>
+                    <td data-label="Nom"><?= $item['lastName'] ?></td>
+                    <td data-label="Email"><?= $item['email'] ?></td>
+                    <td data-label="Date">
                       <small
                         class="has-text-grey is-abbr-like"
-                        title="Oct 25, 2020">Oct 25, 2020</small>
+                        title="<?= $item['dateFr'] ?>"><?= $item['dateFr'] ?></small>
+                    </td>
+                    <td data-label="Roles">
+                      <form action="" method="post">
+                        <div class="field-body">
+                          <div class="field is-narrow">
+                            <div class="control">
+                              <div class="select is-fullwidth">
+                                <input type="hidden" name="id_user" value="<?= $item['id_user'] ?>">
+                                <select name="roles" class="formRoles">
+                                  <option value="user" <?php if(isset($item['roles']) && $item['roles'] == "user") echo 'selected'; ?>>ROLE USER</option>
+                                  <option value="admin" <?php if(isset($item['roles']) && $item['roles'] == "admin") echo 'selected'; ?>>ROLE ADMIN</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="buttons is-right">
+                          <button
+                            type="submit"
+                            name="submit"
+                            class="button is-normal is-black"
+                          >
+                            <span class="icon"><span class="mdi mdi-arrow-right-bold"></span></span>
+                          </a>
+                          </div>
+                        </div>
+                      </form>
                     </td>
                     <td class="is-actions-cell">
                       <div class="buttons is-right">
-                        <button
+                        <!-- <a
+                          href="?action=details&id=<?= $item['id_user'] ?>"
                           class="button is-small is-primary"
-                          type="button">
+                        >
                           <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
+                        </a> -->
                         <button
                           class="button is-small is-danger jb-modal"
-                          data-target="sample-modal"
+                          data-target="sample-modal-<?= $item['id_user'] ?>"
                           type="button">
                           <span class="icon"><i class="mdi mdi-trash-can"></i></span>
                         </button>
                       </div>
                     </td>
                   </tr>
+
+                  <div id="sample-modal-<?= $item['id_user'] ?>" class="modal">
+                      <div class="modal-background jb-modal-close"></div>
+                        <div class="modal-card">
+                          <header class="modal-card-head">
+                            <p class="modal-card-title">Confirmez la supression</p>
+                            <button class="delete jb-modal-close" aria-label="close"></button>
+                          </header>
+                          <section class="modal-card-body">
+                            <p>Voulez-vous réellement supprimer cet administrateur ?</p>
+                          </section>
+                          <footer class="modal-card-foot">
+                            <button class="button jb-modal-close">Annuler</button>
+                            <a href="?action=delete&id=<?= $item['id_user'] ?>" class="button is-danger jb-modal-close">Supprimer</a>
+                          </footer>
+                        </div>
+                        <button
+                          class="modal-close is-large jb-modal-close"
+                          aria-label="close"></button>
+                    </div>
+                  </div>
+
+                  <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
@@ -255,154 +378,12 @@ require_once('include/header.php');
                 </div>
               </div> -->
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section is-main-section">
-      <div class="card">
-        <header class="card-header">
-          <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-ballot"></i></span>
-            Modification utilisateur
-          </p>
-        </header>
-        <div class="card-content">
-          <form method="get">
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">From</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <p class="control is-expanded has-icons-left">
-                    <input class="input" type="text" placeholder="Name" />
-                    <span class="icon is-small is-left"><i class="mdi mdi-account"></i></span>
-                  </p>
-                </div>
-                <div class="field">
-                  <p
-                    class="control is-expanded has-icons-left has-icons-right">
-                    <input
-                      class="input is-success"
-                      type="email"
-                      placeholder="Email"
-                      value="alex@smith.com" />
-                    <span class="icon is-small is-left"><i class="mdi mdi-mail"></i></span>
-                    <span class="icon is-small is-right"><i class="mdi mdi-check"></i></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-label"></div>
-              <div class="field-body">
-                <div class="field is-expanded">
-                  <div class="field has-addons">
-                    <p class="control">
-                      <a class="button is-static">+33</a>
-                    </p>
-                    <p class="control is-expanded">
-                      <input
-                        class="input"
-                        type="tel"
-                        placeholder="Your phone number" />
-                    </p>
-                  </div>
-                  <p class="help">Do not enter the first zero</p>
-                </div>
-              </div>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Department</label>
-              </div>
-              <div class="field-body">
-                <div class="field is-narrow">
-                  <div class="control">
-                    <div class="select is-fullwidth">
-                      <select>
-                        <option>Business development</option>
-                        <option>Marketing</option>
-                        <option>Sales</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Subject</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <input
-                      class="input is-danger"
-                      type="text"
-                      placeholder="e.g. Partnership opportunity" />
-                  </div>
-                  <p class="help is-danger">This field is required</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label">Question</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="control">
-                    <textarea
-                      class="textarea"
-                      placeholder="Explain how we can help you"></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-label">
-                <label class="label">Switch</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <label class="switch is-rounded"><input type="checkbox" value="false" />
-                    <span class="check"></span>
-                    <span class="control-label">Default</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div class="field is-horizontal">
-              <div class="field-label">
-                <!-- Left empty for spacing -->
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <div class="field is-grouped">
-                    <div class="control">
-                      <button type="submit" class="button is-primary">
-                        <span>Submit</span>
-                      </button>
-                    </div>
-                    <div class="control">
-                      <button
-                        type="button"
-                        class="button is-primary is-outlined">
-                        <span>Reset</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
         </div>
       </div>
     </section>
 
 <?php 
 require_once('include/footer.php');
+if($_SESSION['msg'] == false){
+  unset($_SESSION['msgValidation']);
+}

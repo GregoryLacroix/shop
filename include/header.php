@@ -92,6 +92,7 @@
                     aria-expanded="true">
                     <span class="nav-label">BackOffice</span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
+                    <li><a href="admin/index.php">Dashboard</a></li>
                     <li><a href="admin/gestion_boutique.php">Boutique</a></li>
                     <li><a href="admin/gestion_commande.php">Commandes</a></li>
                     <li><a href="admin/gestion_user.php">Utilisateurs</a></li>
