@@ -2,6 +2,7 @@
 <html
   lang="en"
   class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -79,8 +80,8 @@
         <p class="menu-label">General</p>
         <ul class="menu-list">
           <li>
-            <a href="index.php" class="<?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/index.php') echo 'is-active'; ?> has-icon">
-              <span class="icon <?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/index.php') echo ' has-update-mark'; ?>"><i class="mdi mdi-desktop-mac"></i></span>
+            <a href="index.php" class="<?php if ($_SERVER['PHP_SELF'] == '/admin/index.php') echo 'is-active'; ?> has-icon">
+              <span class="icon <?php if ($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/index.php') echo ' has-update-mark'; ?>"><i class="mdi mdi-desktop-mac"></i></span>
               <span class="menu-item-label">Dashboard</span>
             </a>
           </li>
@@ -88,22 +89,22 @@
         <p class="menu-label">MENU</p>
         <ul class="menu-list">
           <li>
-            <a href="gestion_boutique.php" class="<?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_boutique.php') echo 'is-active'; ?> has-icon">
-              <span class="icon  <?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_boutique.php') echo ' has-update-mark'; ?>">
+            <a href="gestion_boutique.php" class="<?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_boutique.php') echo 'is-active'; ?> has-icon">
+              <span class="icon  <?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_boutique.php') echo ' has-update-mark'; ?>">
                 <span class="mdi mdi-store"></span>
               </span>
               <span class="menu-item-label">Boutique</span>
             </a>
           </li>
           <li>
-            <a href="gestion_commande.php" class="<?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_commande.php') echo 'is-active'; ?> has-icon">
-              <span class="icon <?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_commande.php') echo ' has-update-mark'; ?>"><span class="mdi mdi-sheep"></span> </span>
+            <a href="gestion_commande.php" class="<?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_commande.php') echo 'is-active'; ?> has-icon">
+              <span class="icon <?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_commande.php') echo ' has-update-mark'; ?>"><span class="mdi mdi-sheep"></span> </span>
               <span class="menu-item-label">Commandes</span>
             </a>
           </li>
           <li>
-            <a href="gestion_user.php" class="<?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_user.php') echo 'is-active'; ?> has-icon">
-              <span class="icon <?php if($_SERVER['PHP_SELF'] == '/PHP/shop-correction/admin/gestion_user.php') echo 'has-update-mark'; ?>"><i class="mdi mdi-account-circle"></i></span>
+            <a href="gestion_user.php" class="<?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_user.php') echo 'is-active'; ?> has-icon">
+              <span class="icon <?php if ($_SERVER['PHP_SELF'] == '/admin/gestion_user.php') echo 'has-update-mark'; ?>"><i class="mdi mdi-account-circle"></i></span>
               <span class="menu-item-label">Utilisateurs</span>
             </a>
           </li>
