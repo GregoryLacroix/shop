@@ -5,7 +5,22 @@ $data = $connect_db->query("SELECT id_product, title, picture, price FROM produc
 $products = $data->fetchAll(PDO::FETCH_ASSOC);
 // echo '<pre>'; print_r($products); echo '</pre>';
 
+if(isset($_GET['action']) && $_GET['action'] == 'addCart'){
+  $data = $connect_db->query("SELECT id_product, title, picture, reference, price FROM product WHERE id_product = $_GET[id]");
+  $product = $data->fetch(PDO::FETCH_ASSOC);
+  // echo '<pre>'; print_r($product); echo '</pre>';
+
+  $quantity = 1;
+  addProductToCart($product['id_product'], $product['title'], $product['picture'], $product['reference'], $quantity, $product['price']);
+
+  $_SESSION['msgAddProductCart'] = '<div class="bg-success p-3 text-white text-center">L\'article a été ajouté au panier.</div>';
+  $_SESSION['msg'] = true;
+
+  header('location: product.php');
+}
+
 require_once('include/header.php');
+if(isset($_SESSION['msgAddProductCart'])) echo $_SESSION['msgAddProductCart'];
 ?>
 
   <!-- inner page section -->
@@ -36,7 +51,7 @@ require_once('include/header.php');
             <div class="option_container">
               <div class="options">
                 <a href="fiche_produit.php?id=<?= $item['id_product'] ?>" class="option1">En savoir plus</a>
-                <a href="" class="option2">Acheter maintenant</a>
+                <a href="?action=addCart&id=<?= $item['id_product'] ?>" class="option2">Ajouter au panier</a>
               </div>
             </div>
             <div class="img-box">
@@ -62,4 +77,7 @@ require_once('include/header.php');
  
 <?php 
 require_once('include/footer.php');
+if($_SESSION['msg'] == false){
+  unset($_SESSION['msgAddProductCart']);
+}
 ?>

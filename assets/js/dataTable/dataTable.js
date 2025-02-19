@@ -46,4 +46,16 @@ $(document).ready(function () {
       },
     ],
   });
+
+  $("#table-product-stock").DataTable({
+    language: {
+      url: "../assets/js/dataTable/FR-fr.json",
+    },
+    aoColumnDefs: [
+      {
+        bSortable: false,
+        aTargets: [0, 4],
+      },
+    ],
+  });
 });

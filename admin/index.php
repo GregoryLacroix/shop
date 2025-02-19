@@ -139,7 +139,7 @@ require_once('include/header.php');
           <div class="b-table has-pagination">
             <div class="table-wrapper has-mobile-cards">
               <table
-                class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                class="table is-fullwidth is-striped is-hoverable is-fullwidth" id="table-product-stock">
                 <thead>
                   <tr>
                     <th class="is-checkbox-cell">

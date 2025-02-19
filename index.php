@@ -1,13 +1,31 @@
 <?php 
 require_once('include/init.php');
+$_SESSION['msg'] = false;
 
-// echo '<pre>'; print_r($_SESSION); echo '</pre>';
+$data = $connect_db->query("SELECT id_product, picture, title, price FROM product ORDER BY id_product LIMIT 3");
+$products = $data->fetchAll(PDO::FETCH_ASSOC);
+
+if(isset($_GET['action']) && $_GET['action'] == 'addCart'){
+  $data = $connect_db->query("SELECT id_product, title, picture, reference, price FROM product WHERE id_product = $_GET[id]");
+  $product = $data->fetch(PDO::FETCH_ASSOC);
+  // echo '<pre>'; print_r($product); echo '</pre>';
+
+  $quantity = 1;
+  addProductToCart($product['id_product'], $product['title'], $product['picture'], $product['reference'], $quantity, $product['price']);
+
+  $_SESSION['msgAddProductCart'] = '<div class="bg-success p-3 text-white text-center">L\'article a été ajouté au panier.</div>';
+  $_SESSION['msg'] = true;
+
+  header('location: index.php');
+}
 
 require_once('include/header.php');
+if(isset($_SESSION['msgAddProductCart'])) echo $_SESSION['msgAddProductCart'];
+
 ?>
-    
     <!-- slider section -->
     <section class="slider_section">
+      
       <div class="slider_bg_box">
         <img src="assets/images-famma/slider-bg.jpg" alt="" />
       </div>
@@ -31,7 +49,7 @@ require_once('include/header.php');
                       impedit sequi.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1"> Achetez maintenant</a>
+                      <a href="product.php" class="btn1"> Achetez maintenant</a>
                     </div>
                   </div>
                 </div>
@@ -384,26 +402,37 @@ require_once('include/header.php');
         <h2>Nos <span>produits</span></h2>
       </div>
       <div class="row">
+
+        <?php foreach($products as $key => $item): ?>
         <div class="col-sm-6 col-md-4 col-lg-4">
           <div class="box">
             <div class="option_container">
               <div class="options">
-                <a href="" class="option1"> Chemise homme </a>
-                <a href="" class="option2"> Acheter maintenant </a>
+                <a href="fiche_produit.php?id=<?= $item['id_product'] ?>" class="option1">En savoir plus</a>
+                <a href="?action=addCart&id=<?= $item['id_product'] ?>" class="option2">Ajouter au panier</a>
+
+                <!-- <form action="panier.php" method="post" class="d-flex align-items-center justify-content-start">
+                <input type="hidden" name="id_product" value="<?= $item['id_product'] ?>">
+                <label for="quantity">Qté</label>
+            
+                <input type="submit" name="add_cart" class="option2" value="Ajouter au panier" class="m-0">
+              </form> -->
               </div>
             </div>
             <div class="img-box">
-              <img src="assets/images-famma/p1.png" alt="" />
+              <img src="<?= $item['picture'] ?>" alt="<?= $item['title'] ?>" />
             </div>
             <div class="detail-box">
-              <h5>Chemise homme</h5>
-              <h6>75€</h6>
+              <h5><?= $item['title'] ?></h5>
+              <h6><?= $item['price'] ?>€</h6>
             </div>
           </div>
         </div>
+        <?php endforeach; ?>
+
       </div>
       <div class="btn-box">
-        <a href="">Voir tous les produits</a>
+        <a href="product.php">Voir tous les produits</a>
       </div>
     </div>
   </section>
@@ -534,4 +563,7 @@ require_once('include/header.php');
   
 <?php 
 require_once('include/footer.php');
+if($_SESSION['msg'] == false){
+  unset($_SESSION['msgAddProductCart']);
+}
 ?>

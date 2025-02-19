@@ -1,7 +1,17 @@
 <?php 
 require_once('include/init.php');
+$_SESSION['msg'] = false;
 
 // echo '<pre>'; print_r($_POST); echo '</pre>';
+
+if(isset($_GET['action']) && $_GET['action'] == 'delete'){
+  removeProductToCart($_GET['id']);
+
+  $_SESSION['msgValidateRemove'] = '<div class="bg-success p-3 text-white text-center">L\'article a été supprimé du panier.</div>';
+  $_SESSION['msg'] = true;
+
+  header('location: panier.php');
+}
 
 if(isset($_POST['add_cart'])){
   $data = $connect_db->prepare("SELECT * FROM product WHERE id_product = :id");
@@ -74,6 +84,7 @@ if(isset($_POST['payForCart'])){
 // echo '<pre>'; print_r($_SESSION); echo '</pre>';
 
 require_once('include/header.php');
+if(isset($_SESSION['msgValidateRemove'])) echo $_SESSION['msgValidateRemove'];
 ?>
   <!-- inner page section -->
   <section class="inner_page_head">
@@ -137,8 +148,28 @@ require_once('include/header.php');
 
                   <td><strong><?= $_SESSION['cart']['quantity'][$i]*$_SESSION['cart']['price'][$i] ?>€</strong></td>
 
-                  <td><a href="" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a></td>
+                  <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete-product-<?= $_SESSION['cart']['id_product'][$i]; ?>"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
+
+                <div class="modal fade" id="modal-delete-product-<?= $_SESSION['cart']['id_product'][$i]; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Voulez-vous réellement supprimer cet article du panier ?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <a href="?action=delete&id=<?= $_SESSION['cart']['id_product'][$i]; ?>" type="button" class="btn btn-primary">Supprimer</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             <?php 
               endfor; 
             ?>
@@ -183,4 +214,7 @@ require_once('include/header.php');
    
 <?php 
 require_once('include/footer.php');
+if($_SESSION['msg'] == false){
+  unset($_SESSION['msgValidateRemove']);
+}
 ?>
