@@ -13648,3 +13648,8 @@ footer.footer .logo img {
 .picture__product {
   width: 75px;
 }
+
+.columns,
+.is-multiline {
+  padding: 1rem 1rem 0 1rem !important;
+}
