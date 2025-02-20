@@ -66,6 +66,16 @@ require_once('include/header.php');
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2 product_section">
+          <div class="btn-box">
+            <a href=""> Modifier mes informations personnelles </a>
+          </div>
+          <div class="btn-box">
+            <a href="orders.php"> Mes commandes </a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
   <!-- end why section -->

@@ -197,19 +197,16 @@ require_once('include/header.php');
                         <span class="check"></span>
                       </label>
                     </th>
-                    <?php //              10
-                    for($i = 0; $i < $data->columnCount(); $i++):
-                        $dataColumn = $data->getColumnMeta($i);
-                        // echo '<pre>'; print_r($dataColumn); echo '</pre>';  
-                        if($dataColumn['name'] != 'id_product'):
-                    ?>
-
-                      <th><?= ucfirst($dataColumn['name']) ?></th>
-
-                    <?php 
-                        endif;
-                    endfor; 
-                    ?>
+                    <th>Référence</th>
+                    <th>Catégorie</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Couleur</th>
+                    <th>Taille</th>
+                    <th>Genre</th>
+                    <th>Photo</th>
+                    <th>Prix</th>
+                    <th>Stock</th>
                     <th>Actions</th>
                   </tr>
                 </thead>

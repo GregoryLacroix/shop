@@ -53,27 +53,27 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav">
-              <li class="nav-item <?php activeLink('/PHP/shop-correction/index.php') ?>">
+              <li class="nav-item <?php activeLink('/PHP/shop/index.php') ?>">
                 <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
               </li>
-              <li class="nav-item <?php activeLink('/PHP/shop-correction/product.php') ?>">
+              <li class="nav-item <?php activeLink('/PHP/shop/product.php') ?>">
                 <a class="nav-link" href="product.php">Boutique</a>
               </li>
-              <li class="nav-item <?php activeLink('/PHP/shop-correction/contact.php') ?>">
+              <!-- <li class="nav-item <?php activeLink('/PHP/shop/contact.php') ?>">
                 <a class="nav-link" href="contact.php">Contact</a>
-              </li>
+              </li> -->
 
               <?php if(!userConnected()): // On entre dans la condition IF dans le cas où l'indice 'user' n'est pas définit dans la session, donc l'utilisateur n'est pas authentifié ?>
-                <li class="nav-item <?php activeLink('/PHP/shop-correction/connexion.php') ?>">
+                <li class="nav-item <?php activeLink('/PHP/shop/connexion.php') ?>">
                   <a class="nav-link" href="connexion.php">Identifiez-vous</a>
                 </li>
-                <li class="nav-item <?php activeLink('/PHP/shop-correction/inscription.php') ?>">
+                <li class="nav-item <?php activeLink('/PHP/shop/inscription.php') ?>">
                   <a class="nav-link" href="inscription.php">Inscription</a>
                 </li>
               <?php endif; ?>
               
               <?php if(userConnected()): // On entre dans la condition IF dans le cas où l'indice 'user' est définit dans la session, donc l'utilisateur est authentifié ?>
-                <li class="nav-item <?php activeLink('/PHP/shop-correction/profil.php') ?>">
+                <li class="nav-item <?php activeLink('/PHP/shop/profil.php') ?>">
                   <a class="nav-link" href="profil.php">Mon compte</a>
                 </li>
                 <li class="nav-item">
@@ -100,8 +100,8 @@
                 </li>
               <?php endif; ?>
 
-              <li class="nav-item d-flex align-items-start <?php activeLink('/PHP/shop-correction/panier.php') ?>">
-                <a class="nav-link" href="panier.php">
+              <li class="nav-item d-flex align-items-start <?php activeLink('/PHP/shop/panier.php') ?>">
+                <a class="nav-link pr-1" href="panier.php">
                   <svg
                     version="1.1"
                     id="Capa_1"
@@ -161,7 +161,7 @@
 
                 // array_sum() : fonction prédéfinie qui calcul la somme des éléments d'un tableau Array
                 ?>
-                <span class="badge bg-success text-white mt-1"><?= $nbProducts ?></span>
+                <span class="badge bg-success text-white mt-2"><?= $nbProducts ?></span>
               </li>
               <!-- <form class="form-inline">
                 <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">

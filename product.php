@@ -1,5 +1,6 @@
 <?php 
 require_once('include/init.php');
+$_SESSION['msg'] = false;
 
 $data = $connect_db->query("SELECT id_product, title, picture, price FROM product");
 $products = $data->fetchAll(PDO::FETCH_ASSOC);

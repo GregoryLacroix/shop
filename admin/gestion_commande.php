@@ -49,13 +49,46 @@ if(isset($_GET['action']) && $_GET['action'] == 'details'){
 
 //-------- ORDER STATE
 if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
-  echo '<pre>'; print_r($_POST); echo '</pre>';
-  $data = $connect_db->prepare("UPDATE `order` SET state = :state WHERE id_order = :id");
-  $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
-  $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
-  $data->execute();
+  // echo '<pre>'; print_r($_POST); echo '</pre>';
 
-  $_SESSION['msgValidation'] = "L'état de la commande a été modifiée.";
+  if($_POST['state'] == 'sent'){
+    $sentAt = Date('Y-m-d H:i:s'); 
+    $data = $connect_db->prepare("UPDATE `order` SET state = :state, sentAt = :sentAt WHERE id_order = :id");
+    $data->bindValue(':sentAt', $sentAt, PDO::PARAM_STR);
+    $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
+    $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
+    $data->execute();
+  }
+  elseif($_POST['state'] == 'delivered'){
+    $data = $connect_db->query("SELECT sentAt FROM `order` WHERE id_order = $_POST[id_order] AND sentAt IS NULL");
+    var_dump($data->rowCount());
+    
+    if($data->rowCount() != 0){
+      echo 'erreur';
+      $error = true;  
+    }else{
+      echo 'ok';
+      $sentAt = Date('Y-m-d H:i:s'); 
+      $data = $connect_db->prepare("UPDATE `order` SET state = :state, deliveredAt = :deliveredAt WHERE id_order = :id");
+      $data->bindValue(':deliveredAt', $sentAt, PDO::PARAM_STR);
+      $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
+      $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
+      $data->execute();
+    }
+  }
+  elseif($_POST['state'] == 'treatment'){
+    $data = $connect_db->prepare("UPDATE `order` SET state = :state, sentAt = :sentAt, deliveredAt = :deliveredAt WHERE id_order = :id");
+    $data->bindValue(':sentAt', null, PDO::PARAM_STR);
+    $data->bindValue(':deliveredAt', null, PDO::PARAM_STR);
+    $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
+    $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
+    $data->execute();
+  }
+
+  if(isset($error))
+    $_SESSION['msgValidation'] = "La commande n'a pas encore été envoyée.";
+  else
+    $_SESSION['msgValidation'] = "L'état de la commande a été modifiée.";
 
   $_SESSION['msg'] = true;
 

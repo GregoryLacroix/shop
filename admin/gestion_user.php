@@ -18,9 +18,9 @@ $users = $data->fetchAll(PDO::FETCH_ASSOC);
 $nbUsers = $data->rowCount();
 
 if($nbUsers <= 1)
-  $txtNbUsers = "$nbUsers membre";
+  $txtNbUsers = "$nbUsers client";
 else 
-  $txtNbUsers = "$nbUsers membres";
+  $txtNbUsers = "$nbUsers clients";
 
 
 // ---- ADMIN

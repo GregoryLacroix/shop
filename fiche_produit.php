@@ -15,6 +15,11 @@ if(isset($_GET['id'])){
   $product = $data->fetch(PDO::FETCH_ASSOC);
   // echo '<pre>'; print_r($product); echo '</pre>';
 
+  // SIMILAR PRODUCTS
+  $data = $connect_db->query("SELECT * FROM product WHERE category = '$product[category]' AND id_product != $_GET[id] ORDER BY id_product DESC LIMIT 4");
+  $similarProducts = $data->fetchAll(PDO::FETCH_ASSOC);
+  // echo '<pre>'; print_r($similarProducts); echo '</pre>';
+
 }else {
   // Sinon on redirige l'internaute
   header('location: index.php');
@@ -65,13 +70,13 @@ require_once('include/header.php');
               <form action="panier.php" method="post" class="d-flex align-items-center justify-content-start">
                 <input type="hidden" name="id_product" value="<?= $product['id_product'] ?>">
                 <!-- <label for="quantity">Qté</label> -->
-                <select name="quantity" id="quantity" class="form-control col-2 mr-2">
+                <select name="quantity" id="quantity" class="form-control col-2 mr-2 rounded-0">
                   <!--              6            500              5             -->
                   <?php for($i = 1; $i <= $product['stock'] && $i <= 10; $i++): ?>
                     <option value="<?= $i ?>"><?= $i ?></option>
                   <?php endfor; ?>
                 </select>
-                <input type="submit" name="add_cart" value="Ajouter au panier" class="m-0">
+                <input type="submit" name="add_cart" value="Ajouter au panier" class="m-0 py-2 px-3">
               </form>
 
             <?php else: ?>
@@ -81,8 +86,36 @@ require_once('include/header.php');
           </div>
         </div>
       </div>
-      <div class="btn-box">
+      <!-- <div class="btn-box">
         <a href=""> Voir tout les produits </a>
+      </div> -->
+
+      <div class="heading_container heading_center mt-5">
+        <h2>Articles<span> similaires</span></h2>
+      </div>
+
+      <div class="row">
+
+        <?php foreach($similarProducts as $key => $item): ?>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <div class="box">
+            <div class="option_container">
+              <div class="options">
+                <a href="fiche_produit.php?id=<?= $item['id_product'] ?>" class="option1">En savoir plus</a>
+                <!-- <a href="?action=addCart&id=<?= $item['id_product'] ?>" class="option2">Ajouter au panier</a> -->
+              </div>
+            </div>
+            <div class="img-box">
+              <img src="<?= $item['picture'] ?>" alt="<?= $item['title'] ?>" />
+            </div>
+            <div class="detail-box">
+              <h5><?= $item['title'] ?></h5>
+              <h6><?= $item['price'] ?>€</h6>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+
       </div>
     </div>
   </section>

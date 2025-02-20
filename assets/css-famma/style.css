@@ -1159,3 +1159,7 @@ form input[type="submit"]:focus {
 .picture__product {
   width: 75px;
 }
+
+.picture_order {
+  width: 40px;
+}

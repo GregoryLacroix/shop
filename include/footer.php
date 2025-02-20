@@ -18,6 +18,10 @@
                 <i class="fa fa-envelope" aria-hidden="true"></i>
                 <span> demo@gmail.com </span>
               </a>
+              <a href="contact.php">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span> Contactez-nous </span>
+              </a>
             </div>
           </div>
         </div>
