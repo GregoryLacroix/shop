@@ -30,23 +30,28 @@ if(isset($_POST['order']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
 }else{
 
   $data = $connect_db->query("SELECT COUNT(*) AS nbOrderDetails FROM orders_details GROUP BY orders_details.order_id ORDER BY orders_details.order_id DESC LIMIT 1");
-  $nbOrderDetails = $data->fetch(PDO::FETCH_ASSOC);
 
-  $data = $connect_db->query("
-    SELECT `orders`.*, product.*, orders_details.*
-    FROM user INNER JOIN `orders`
-    ON user.id_user = orders.user_id
-    INNER JOIN orders_details
-    ON orders.id_order = orders_details.order_id 
-    INNER JOIN product
-    ON orders_details.product_id = product.id_product
-    AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY orders_details.order_id DESC LIMIT $nbOrderDetails[nbOrderDetails]
-  ");
+  if($data->rowCount()){
+    $nbOrderDetails = $data->fetch(PDO::FETCH_ASSOC);
 
-  $lastOrder = true;
+    $data = $connect_db->query("
+      SELECT `orders`.*, product.*, orders_details.*
+      FROM user INNER JOIN `orders`
+      ON user.id_user = orders.user_id
+      INNER JOIN orders_details
+      ON orders.id_order = orders_details.order_id 
+      INNER JOIN product
+      ON orders_details.product_id = product.id_product
+      AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY orders_details.order_id DESC LIMIT $nbOrderDetails[nbOrderDetails]
+    ");
+
+    $lastOrder = true;
+  }
 }
 
-$order = $data->fetchAll(PDO::FETCH_ASSOC);
+if($data){
+  $order = $data->fetchAll(PDO::FETCH_ASSOC);
+}
 // echo '<pre>'; print_r($order); echo '</pre>';
 // echo '<pre>'; print_r($_POST); echo '</pre>';
 
@@ -71,6 +76,7 @@ require_once('include/header.php');
     <div class="container">
       <div class="row">
         <div class="col-lg-8 offset-lg-2">
+          <?php if($order): ?>
           <div class="full">
             <div class="col-sm-12 col-md-8 col-lg-12">
                 <form action="" method="post" class="d-flex align-items-center justify-content-start mb-4">
@@ -156,6 +162,9 @@ require_once('include/header.php');
               </div>
             </div>
           </div>
+          <?php else: ?>
+            <h3 class="mb-0">Vous n'avez pas encore de commande enregistrée.</h3>
+          <?php endif; ?>
         </div>
       </div>
     </div>
