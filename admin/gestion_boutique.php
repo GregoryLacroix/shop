@@ -93,8 +93,6 @@ if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
     $_SESSION['msgValidation'] = "L'enregistrement a été validé.";
   }
 
-  $_SESSION['msg'] = true;
-
   $data->bindValue(':reference', $_POST['reference'], PDO::PARAM_STR);
   $data->bindValue(':category', $_POST['category'], PDO::PARAM_STR);
   $data->bindValue(':title', $_POST['title'], PDO::PARAM_STR);

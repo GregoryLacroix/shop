@@ -64,8 +64,16 @@ CREATE TABLE `testimonial` (
   id_testimonial int(11) NOT NULL AUTO_INCREMENT,
   message LONGTEXT NOT NULL,
   date DATETIME NOT NULL,
-  PRIMARY KEY (id_testimonial)
+  rating INT(11) DEFAULT NULL,
+  user_id INT(11) NOT NULL,
+  product_id INT(11) NOT NULL,
+  PRIMARY KEY (id_testimonial),
+  FOREIGN KEY (user_id) REFERENCES user(id_user)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `testimonial` ADD CONSTRAINT FK_UserTestimonial FOREIGN KEY (user_id) REFERENCES user (id_user) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE `testimonial` ADD CONSTRAINT FK_UserTestimonial FOREIGN KEY (product_id) REFERENCES product (id_product) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 CREATE TABLE `contact` (
   id_contact int(11) NOT NULL AUTO_INCREMENT,
