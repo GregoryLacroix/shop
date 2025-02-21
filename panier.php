@@ -64,14 +64,14 @@ if(isset($_POST['payForCart'])){
 
   // requete insertion commande en BDD
   if(empty($error)){
-    $data = $connect_db->exec("INSERT INTO `order` (user_id, rising, date, state) VALUES (" . $_SESSION['user']['id_user'] . ", " . totalAmount() . ", NOW(), 'treatment')");
+    $data = $connect_db->exec("INSERT INTO `orders` (user_id, rising, date, state) VALUES (" . $_SESSION['user']['id_user'] . ", " . totalAmount() . ", NOW(), 'treatment')");
 
-    // On récupère le dernier id généré en BDD, l'id de la commande inséré en BDD pour l'enregistrer dans la table SQL order_details, afin de lié chaque produit à la bonne commande
+    // On récupère le dernier id généré en BDD, l'id de la commande inséré en BDD pour l'enregistrer dans la table SQL orders_details, afin de lié chaque produit à la bonne commande
     $idOrder = $connect_db->lastInsertId();
     // print_r($idOrder);
 
     for($i = 0; $i < count($_SESSION['cart']['id_product']); $i++){
-      $data = $connect_db->exec("INSERT INTO `order_details` (order_id, product_id, quantity, price) VALUES ($idOrder, " . $_SESSION['cart']['id_product'][$i] . ", " . $_SESSION['cart']['quantity'][$i] . ", " . $_SESSION['cart']['price'][$i] . ")");
+      $data = $connect_db->exec("INSERT INTO `orders_details` (order_id, product_id, quantity, price) VALUES ($idOrder, " . $_SESSION['cart']['id_product'][$i] . ", " . $_SESSION['cart']['quantity'][$i] . ", " . $_SESSION['cart']['price'][$i] . ")");
 
       $data = $connect_db->exec("UPDATE product SET stock = stock - " . $_SESSION['cart']['quantity'][$i] . " WHERE id_product = " . $_SESSION['cart']['id_product'][$i]);
     }

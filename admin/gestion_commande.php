@@ -13,10 +13,10 @@ if(!adminConnected()){
 //-------- ORDERS 
 
 $data = $connect_db->query("
-  SELECT order.id_order, user.firstName, user.lastName, order.rising, DATE_FORMAT(order.date, '%d/%m/%Y') AS dateFr, order.state
-  FROM user INNER JOIN `order`
-  ON user.id_user = order.user_id
-  ORDER BY order.date DESC 
+  SELECT orders.id_order, user.firstName, user.lastName, orders.rising, DATE_FORMAT(orders.date, '%d/%m/%Y') AS dateFr, orders.state
+  FROM user INNER JOIN `orders`
+  ON user.id_user = orders.user_id
+  ORDER BY orders.date DESC 
 ");
 
 $orders = $data->fetchAll(PDO::FETCH_ASSOC);
@@ -37,10 +37,10 @@ if(isset($_GET['action']) && $_GET['action'] == 'details'){
     header('location: gestion_commande.php');
 
   $data = $connect_db->query("
-    SELECT order_details.order_id, order_details.product_id, product.reference, product.picture, product.title, order_details.quantity, order_details.price
-    FROM product INNER JOIN order_details
-    ON product.id_product = order_details.product_id
-    AND order_details.order_id = $_GET[id]
+    SELECT orders_details.order_id, orders_details.product_id, product.reference, product.picture, product.title, orders_details.quantity, orders_details.price
+    FROM product INNER JOIN orders_details
+    ON product.id_product = orders_details.product_id
+    AND orders_details.order_id = $_GET[id]
   ");
 
   $ordersDetails = $data->fetchAll(PDO::FETCH_ASSOC);
@@ -53,14 +53,14 @@ if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
 
   if($_POST['state'] == 'sent'){
     $sentAt = Date('Y-m-d H:i:s'); 
-    $data = $connect_db->prepare("UPDATE `order` SET state = :state, sentAt = :sentAt WHERE id_order = :id");
+    $data = $connect_db->prepare("UPDATE `orders` SET state = :state, sentAt = :sentAt WHERE id_order = :id");
     $data->bindValue(':sentAt', $sentAt, PDO::PARAM_STR);
     $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
     $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
     $data->execute();
   }
   elseif($_POST['state'] == 'delivered'){
-    $data = $connect_db->query("SELECT sentAt FROM `order` WHERE id_order = $_POST[id_order] AND sentAt IS NULL");
+    $data = $connect_db->query("SELECT sentAt FROM `orders` WHERE id_order = $_POST[id_order] AND sentAt IS NULL");
     var_dump($data->rowCount());
     
     if($data->rowCount() != 0){
@@ -69,7 +69,7 @@ if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
     }else{
       echo 'ok';
       $sentAt = Date('Y-m-d H:i:s'); 
-      $data = $connect_db->prepare("UPDATE `order` SET state = :state, deliveredAt = :deliveredAt WHERE id_order = :id");
+      $data = $connect_db->prepare("UPDATE `orders` SET state = :state, deliveredAt = :deliveredAt WHERE id_order = :id");
       $data->bindValue(':deliveredAt', $sentAt, PDO::PARAM_STR);
       $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);
       $data->bindValue(':id', $_POST['id_order'], PDO::PARAM_STR);
@@ -77,7 +77,7 @@ if(isset($_POST['submit']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
     }
   }
   elseif($_POST['state'] == 'treatment'){
-    $data = $connect_db->prepare("UPDATE `order` SET state = :state, sentAt = :sentAt, deliveredAt = :deliveredAt WHERE id_order = :id");
+    $data = $connect_db->prepare("UPDATE `orders` SET state = :state, sentAt = :sentAt, deliveredAt = :deliveredAt WHERE id_order = :id");
     $data->bindValue(':sentAt', null, PDO::PARAM_STR);
     $data->bindValue(':deliveredAt', null, PDO::PARAM_STR);
     $data->bindValue(':state', $_POST['state'], PDO::PARAM_STR);

@@ -12,15 +12,15 @@ if(!adminConnected()){
 $data = $connect_db->query("SELECT COUNT(*) AS nbClient FROM user WHERE roles != 'admin'");
 $nbClient = $data->fetch(PDO::FETCH_ASSOC);
 
-$data = $connect_db->query("SELECT SUM(rising) AS nbSales FROM `order`");
+$data = $connect_db->query("SELECT SUM(rising) AS nbSales FROM `orders`");
 $nbSales = $data->fetch(PDO::FETCH_ASSOC); 
 
 $data = $connect_db->query("
   SELECT product.title
-  FROM product INNER JOIN order_details
-  WHERE order_details.product_id = product.id_product
-  GROUP BY order_details.product_id
-  ORDER BY COUNT(order_details.product_id) DESC LIMIT 0,1
+  FROM product INNER JOIN orders_details
+  WHERE orders_details.product_id = product.id_product
+  GROUP BY orders_details.product_id
+  ORDER BY COUNT(orders_details.product_id) DESC LIMIT 0,1
 ");
 $bestSale = $data->fetch(PDO::FETCH_ASSOC);
 

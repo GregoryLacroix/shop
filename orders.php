@@ -8,39 +8,39 @@ if(!userConnected()){
 }
 
 $data = $connect_db->query("
-  SELECT DISTINCT(`order`.id_order) 
-  FROM user INNER JOIN `order`
-  ON user.id_user = order.user_id
-  AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY order.id_order DESC"
+  SELECT DISTINCT(`orders`.id_order) 
+  FROM user INNER JOIN `orders`
+  ON user.id_user = orders.user_id
+  AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY orders.id_order DESC"
 );
 $iDorders = $data->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_POST['order']) && $_SERVER['REQUEST_METHOD'] === 'POST'){
   $data = $connect_db->query("
-    SELECT `order`.*, product.*, order_details.*
-    FROM user INNER JOIN `order`
-    ON user.id_user = order.user_id
-    INNER JOIN order_details
-    ON order.id_order = order_details.order_id 
+    SELECT `orders`.*, product.*, orders_details.*
+    FROM user INNER JOIN `orders`
+    ON user.id_user = orders.user_id
+    INNER JOIN orders_details
+    ON orders.id_order = orders_details.order_id 
     INNER JOIN product
-    ON order_details.product_id = product.id_product
+    ON orders_details.product_id = product.id_product
     AND user.id_user = " . $_SESSION['user']['id_user'] . " 
-    AND order_details.order_id = $_POST[order]
+    AND orders_details.order_id = $_POST[order]
   ");
 }else{
 
-  $data = $connect_db->query("SELECT COUNT(*) AS nbOrderDetails FROM order_details GROUP BY order_details.order_id ORDER BY order_details.order_id DESC LIMIT 1");
+  $data = $connect_db->query("SELECT COUNT(*) AS nbOrderDetails FROM orders_details GROUP BY orders_details.order_id ORDER BY orders_details.order_id DESC LIMIT 1");
   $nbOrderDetails = $data->fetch(PDO::FETCH_ASSOC);
 
   $data = $connect_db->query("
-    SELECT `order`.*, product.*, order_details.*
-    FROM user INNER JOIN `order`
-    ON user.id_user = order.user_id
-    INNER JOIN order_details
-    ON order.id_order = order_details.order_id 
+    SELECT `orders`.*, product.*, orders_details.*
+    FROM user INNER JOIN `orders`
+    ON user.id_user = orders.user_id
+    INNER JOIN orders_details
+    ON orders.id_order = orders_details.order_id 
     INNER JOIN product
-    ON order_details.product_id = product.id_product
-    AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY order_details.order_id DESC LIMIT $nbOrderDetails[nbOrderDetails]
+    ON orders_details.product_id = product.id_product
+    AND user.id_user = " . $_SESSION['user']['id_user'] . " ORDER BY orders_details.order_id DESC LIMIT $nbOrderDetails[nbOrderDetails]
   ");
 
   $lastOrder = true;
